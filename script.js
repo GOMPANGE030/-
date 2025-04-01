@@ -15,28 +15,28 @@ document.addEventListener("DOMContentLoaded", () => {
   let isDrawing = false;
 
   // 배경 이미지 로드
-  const image = new Image();
-  image.src = "test.jpg";
+  const bgImage = new Image();
+  bgImage.src = "test.jpg";
 
-  image.onload = () => {
+  // 오버레이(덮개) 이미지 로드 - 여러분이 제작한 이미지
+  const overlayImage = new Image();
+  overlayImage.src = "overlay.png"; // 여러분이 만든 이미지 파일명으로 변경
+
+  // 배경 이미지가 로드되면 캔버스 크기 설정 및 배경 그리기
+  bgImage.onload = () => {
     backgroundCanvas.width = scratchCanvas.width = WIDTH;
     backgroundCanvas.height = scratchCanvas.height = HEIGHT;
     
     // 배경 이미지 그리기
-    bgCtx.drawImage(image, 0, 0, WIDTH, HEIGHT);
-    
-    // scratchCanvas를 완전 투명한 캔버스로 설정
-    scratchCtx.fillStyle = "#999";
-    scratchCtx.fillRect(0, 0, WIDTH, HEIGHT);
-    
-    scratchCtx.font = "20px sans-serif";
-    scratchCtx.fillStyle = "#000";
-    scratchCtx.textAlign = "center";
-    scratchCtx.textBaseline = "middle";
-    scratchCtx.fillText("여기를 긁어보세요", WIDTH / 2, HEIGHT / 2);
+    bgCtx.drawImage(bgImage, 0, 0, WIDTH, HEIGHT);
+
+    // 오버레이 이미지가 로드되면 scratchCanvas에 그리기
+    overlayImage.onload = () => {
+      scratchCtx.drawImage(overlayImage, 0, 0, WIDTH, HEIGHT);
+    };
   };
 
-  // 터치 & 마우스 좌표 가져오기
+  // 터치 및 마우스 좌표 계산 함수
   function getEventPosition(event) {
     const rect = scratchCanvas.getBoundingClientRect();
     if (event.touches) {
@@ -52,19 +52,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 긁기 기능
+  // 긁기 시작
   function startDrawing(event) {
-    event.preventDefault(); // 기본 터치 동작 방지
+    event.preventDefault(); // 터치 기본 동작 방지
     isDrawing = true;
-    draw(event); // 첫 터치에도 바로 효과 적용
+    draw(event); // 첫 터치에서도 효과 적용
   }
 
+  // 긁기 진행
   function draw(event) {
     if (!isDrawing) return;
     event.preventDefault(); // 터치 이동 시 스크롤 방지
     
     const { x, y } = getEventPosition(event);
     
+    // destination-out 모드로 그리면, 해당 영역이 지워져 배경이 보임
     scratchCtx.globalCompositeOperation = "destination-out";
     
     scratchCtx.beginPath();
@@ -72,23 +74,24 @@ document.addEventListener("DOMContentLoaded", () => {
     scratchCtx.fill();
   }
 
+  // 긁기 종료
   function stopDrawing(event) {
     event.preventDefault();
     isDrawing = false;
   }
 
-  // 이벤트 리스너 등록
+  // 이벤트 리스너 등록 (마우스)
   scratchCanvas.addEventListener("mousedown", startDrawing);
   scratchCanvas.addEventListener("mousemove", draw);
   scratchCanvas.addEventListener("mouseup", stopDrawing);
   scratchCanvas.addEventListener("mouseleave", stopDrawing);
 
-  // 모바일 터치 지원 (스크롤 방지 포함)
+  // 이벤트 리스너 등록 (터치)
   scratchCanvas.addEventListener("touchstart", startDrawing, { passive: false });
   scratchCanvas.addEventListener("touchmove", draw, { passive: false });
   scratchCanvas.addEventListener("touchend", stopDrawing);
 
-  // 📌 모바일 화면 이동 완전 차단
+  // 모바일 터치 스크롤 완전 차단
   window.addEventListener("touchmove", (event) => {
     event.preventDefault();
   }, { passive: false });
