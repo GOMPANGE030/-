@@ -3,8 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const backgroundCanvas = document.getElementById("backgroundCanvas");
   const scratchCanvas = document.getElementById("scratchCanvas");
   const resultImage = document.getElementById("resultImage");
+  const panpanImage = document.getElementById("panpanImage");
 
-  if (!container || !backgroundCanvas || !scratchCanvas || !resultImage) {
+  if (!container || !backgroundCanvas || !scratchCanvas || !resultImage || !panpanImage) {
     console.error("Error: Required elements not found!");
     return;
   }
@@ -14,16 +15,16 @@ document.addEventListener("DOMContentLoaded", () => {
   let isDrawing = false;
   let currentWidth, currentHeight;
   const ERASE_RADIUS = 20;
-  let resultShown = false; // 결과(페이드인, 페이드아웃)가 한 번만 실행되도록
+  let resultShown = false; // 페이드인/아웃 효과가 한 번만 실행되도록
   
   // 배경 이미지와 오버레이 이미지 로드
   const bgImage = new Image();
   bgImage.src = "test.jpg"; // 스크래치 카드 배경 이미지
   
   const overlayImage = new Image();
-  overlayImage.src = "overlay.png"; // 오버레이(덮개) 이미지
+  overlayImage.src = "overlay.png"; // 스크래치 덮개 이미지
   
-  // 컨테이너의 크기에 맞게 캔버스 사이즈 재설정
+  // 컨테이너 크기에 맞게 캔버스 사이즈 재설정
   function setCanvasSize() {
     const rect = container.getBoundingClientRect();
     currentWidth = rect.width;
@@ -67,16 +68,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const imageData = scratchCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height);
     let totalPixels = imageData.data.length / 4;
     let transparentPixels = 0;
+    
     for (let i = 0; i < imageData.data.length; i += 4) {
-      if (imageData.data[i + 3] === 0) {
+      // 알파값이 128 미만이면 투명하다고 간주
+      if (imageData.data[i + 3] < 128) {
         transparentPixels++;
       }
     }
+    
     if (transparentPixels / totalPixels > 0.5 && !resultShown) {
-      // overlay.png(스크래치 덮개)를 페이드아웃 시켜 완전히 사라지게 함
+      // overlay(스크래치 덮개)를 페이드아웃 시켜 배경(test.jpg)이 보이도록 함
       scratchCanvas.classList.add("fade-out");
-      // 스크래치 카드 아래 result.png를 페이드인으로 서서히 나타나게 함
+      // 결과 이미지(result.png)를 페이드인
       resultImage.classList.add("visible");
+      // panpan.png를 레이아웃 최상단에 페이드인
+      panpanImage.classList.add("visible");
+      
       resultShown = true;
     }
   }
@@ -94,7 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     
     const { x, y } = getEventPosition(event);
-    // destination-out 모드: overlay의 해당 영역을 지워 배경(test.jpg)이 보이게 함
+    
+    // destination-out 모드: overlay의 해당 영역을 지워 배경이 보이게 함
     scratchCtx.globalCompositeOperation = "destination-out";
     scratchCtx.beginPath();
     scratchCtx.arc(x, y, ERASE_RADIUS, 0, Math.PI * 2);
