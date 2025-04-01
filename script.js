@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const ERASE_RADIUS = 30; // 지우는 반경
   let isDrawing = false;
 
-  // 🎨 1️⃣ 배경 이미지 로드
+  // 1️⃣ 배경 이미지 로드
   const image = new Image();
   image.src = "test.jpg"; // 긁기 후 나타날 이미지
 
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fillText("여기를 긁어보세요", WIDTH / 2, HEIGHT / 2);
   };
 
-  // 🎨 긁기 기능 (덮개 지우기)
+  // 2️⃣ 긁기 기능
   function startDrawing() {
     isDrawing = true;
   }
@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function draw(event) {
     if (!isDrawing) return;
 
+    // 캔버스 좌표 계산
     const { offsetX, offsetY } = event;
 
     // 지우기 모드 활성화 (덮개 제거)
@@ -57,12 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
     isDrawing = false;
   }
 
-  // 🖱️ 이벤트 리스너 등록
+  // 3️⃣ 이벤트 리스너 등록
   canvas.addEventListener("mousedown", startDrawing);
   canvas.addEventListener("mousemove", draw);
   canvas.addEventListener("mouseup", stopDrawing);
 
-  // 터치 이벤트 리스너 (모바일 대응)
+  // 터치 이벤트 추가 (모바일 대응)
   canvas.addEventListener("touchstart", (event) => {
     isDrawing = true;
   });
