@@ -6,18 +6,18 @@
     <title>테스트</title>
     <style>
         body { text-align: center; font-family: Arial, sans-serif; }
-        .wrapper { position: relative; width: 400px; margin: 20px auto; }
-        canvas { background-color: #999; border-radius: 8px; }
+        .wrapper { position: relative; width: 400px; height: 200px; margin: 20px auto; }
+        canvas { border-radius: 8px; position: absolute; top: 0; left: 0; }
         .result { font-size: 20px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <h1>테스트</h1>
-    <div class="wrapper">
+    <div class="wrapper" id="scratchContainer">
         <div class="result">안녕하세요, 화이팅.</div>
         <canvas id="backgroundCanvas"></canvas>
-        <canvas id="scratchCanvas" style="position: absolute; top: 0; left: 0;"></canvas>
-        <script src="script.js"></script>
+        <canvas id="scratchCanvas"></canvas>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
