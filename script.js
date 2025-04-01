@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const scratchCtx = scratchCanvas.getContext("2d");
   const WIDTH = 400;
   const HEIGHT = 200;
-  const ERASE_RADIUS = 10;
+  const ERASE_RADIUS = 20;
   let isDrawing = false;
 
   // 배경 이미지 로드
