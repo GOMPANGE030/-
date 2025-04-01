@@ -2,7 +2,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("scratchContainer");
   const backgroundCanvas = document.getElementById("backgroundCanvas");
   const scratchCanvas = document.getElementById("scratchCanvas");
-  if (!container || !backgroundCanvas || !scratchCanvas) {
+  const resultImage = document.getElementById("resultImage");
+  
+  if (!container || !backgroundCanvas || !scratchCanvas || !resultImage) {
     console.error("Error: Required elements not found!");
     return;
   }
@@ -12,10 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let isDrawing = false;
   let currentWidth, currentHeight;
   const ERASE_RADIUS = 20;
+  let resultShown = false; // 결과 이미지가 한 번만 표시되도록
   
   // 배경 이미지와 오버레이 이미지 로드
   const bgImage = new Image();
-  bgImage.src = "test.jpg";  // 스크래치 카드의 배경 이미지
+  bgImage.src = "test.jpg";  // 스크래치 카드 배경 이미지
   
   const overlayImage = new Image();
   overlayImage.src = "overlay.png";  // 오버레이(덮개) 이미지
@@ -68,6 +71,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   
+  // 스크래치 진행 후 일정 비율 이상 지워지면 결과 이미지를 표시하는 함수
+  function checkScratchCompletion() {
+    const imageData = scratchCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height);
+    let totalPixels = imageData.data.length / 4;
+    let transparentPixels = 0;
+    for (let i = 0; i < imageData.data.length; i += 4) {
+      if (imageData.data[i + 3] === 0) {
+        transparentPixels++;
+      }
+    }
+    if (transparentPixels / totalPixels > 0.5 && !resultShown) {  // 50% threshold
+      resultImage.style.display = "block";
+      resultShown = true;
+    }
+  }
+  
   // 긁기 시작
   function startDrawing(event) {
     event.preventDefault();
@@ -87,6 +106,9 @@ document.addEventListener("DOMContentLoaded", () => {
     scratchCtx.beginPath();
     scratchCtx.arc(x, y, ERASE_RADIUS, 0, Math.PI * 2);
     scratchCtx.fill();
+    
+    // 스크래치 완료 여부 체크
+    checkScratchCompletion();
   }
   
   // 긁기 종료
