@@ -1,90 +1,62 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const canvas = document.getElementById("canvas");
-  if (!canvas) {
-    console.error("Error: 'canvas' element not found!");
+  const backgroundCanvas = document.getElementById("backgroundCanvas");
+  const scratchCanvas = document.getElementById("scratchCanvas");
+  if (!backgroundCanvas || !scratchCanvas) {
+    console.error("Error: Canvas elements not found!");
     return;
   }
 
-  const ctx = canvas.getContext("2d");
+  const bgCtx = backgroundCanvas.getContext("2d");
+  const scratchCtx = scratchCanvas.getContext("2d");
   const WIDTH = 400;
   const HEIGHT = 200;
-  const ERASE_RADIUS = 30; // 지우는 반경
+  const ERASE_RADIUS = 30;
   let isDrawing = false;
 
   // 배경 이미지 로드
   const image = new Image();
-  image.src = "test.jpg"; // 긁기 후 나타날 이미지
+  image.src = "test.jpg";
 
   image.onload = () => {
-    // 캔버스 크기 설정
-    canvas.width = WIDTH;
-    canvas.height = HEIGHT;
-
+    backgroundCanvas.width = scratchCanvas.width = WIDTH;
+    backgroundCanvas.height = scratchCanvas.height = HEIGHT;
+    
     // 배경 이미지 그리기
-    ctx.drawImage(image, 0, 0, WIDTH, HEIGHT);
+    bgCtx.drawImage(image, 0, 0, WIDTH, HEIGHT);
 
-    // 덮개 그리기 (회색)
-    ctx.fillStyle = "#999";
-    ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-    // 텍스트 추가
-    ctx.font = "20px sans-serif";
-    ctx.fillStyle = "#000";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText("여기를 긁어보세요", WIDTH / 2, HEIGHT / 2);
+    // 덮개 캔버스 설정 (회색 배경 + 텍스트 표시)
+    scratchCtx.fillStyle = "#999";
+    scratchCtx.fillRect(0, 0, WIDTH, HEIGHT);
+    
+    scratchCtx.font = "20px sans-serif";
+    scratchCtx.fillStyle = "#000";
+    scratchCtx.textAlign = "center";
+    scratchCtx.textBaseline = "middle";
+    scratchCtx.fillText("여기를 긁어보세요", WIDTH / 2, HEIGHT / 2);
   };
 
-  // 긁기 시작
+  // 긁기 기능
   function startDrawing() {
     isDrawing = true;
   }
 
-  // 긁는 동작
   function draw(event) {
     if (!isDrawing) return;
 
     const { offsetX, offsetY } = event;
-
-    // 긁기 모드 활성화
-    ctx.globalCompositeOperation = "destination-out";
-
-    ctx.beginPath();
-    ctx.arc(offsetX, offsetY, ERASE_RADIUS, 0, Math.PI * 2);
-    ctx.fill();
+    scratchCtx.globalCompositeOperation = "destination-out";
+    
+    scratchCtx.beginPath();
+    scratchCtx.arc(offsetX, offsetY, ERASE_RADIUS, 0, Math.PI * 2);
+    scratchCtx.fill();
   }
 
-  // 긁기 종료
   function stopDrawing() {
     isDrawing = false;
   }
 
-  // 마우스 이벤트 리스너 등록
-  canvas.addEventListener("mousedown", startDrawing);
-  canvas.addEventListener("mousemove", draw);
-  canvas.addEventListener("mouseup", stopDrawing);
-
-  // 터치 이벤트 등록 (모바일 대응)
-  canvas.addEventListener("touchstart", (event) => {
-    isDrawing = true;
-  });
-
-  canvas.addEventListener("touchmove", (event) => {
-    if (!isDrawing) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const touch = event.touches[0];
-    const offsetX = touch.clientX - rect.left;
-    const offsetY = touch.clientY - rect.top;
-
-    ctx.globalCompositeOperation = "destination-out";
-
-    ctx.beginPath();
-    ctx.arc(offsetX, offsetY, ERASE_RADIUS, 0, Math.PI * 2);
-    ctx.fill();
-  });
-
-  canvas.addEventListener("touchend", () => {
-    isDrawing = false;
-  });
+  // 이벤트 리스너 등록
+  scratchCanvas.addEventListener("mousedown", startDrawing);
+  scratchCanvas.addEventListener("mousemove", draw);
+  scratchCanvas.addEventListener("mouseup", stopDrawing);
 });
