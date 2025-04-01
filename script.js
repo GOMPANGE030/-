@@ -2,40 +2,56 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("scratchContainer");
   const backgroundCanvas = document.getElementById("backgroundCanvas");
   const scratchCanvas = document.getElementById("scratchCanvas");
-  if (!backgroundCanvas || !scratchCanvas || !container) {
-    console.error("Error: Canvas elements not found!");
+  if (!container || !backgroundCanvas || !scratchCanvas) {
+    console.error("Error: Required elements not found!");
     return;
   }
-
+  
   const bgCtx = backgroundCanvas.getContext("2d");
   const scratchCtx = scratchCanvas.getContext("2d");
-  const WIDTH = 400;
-  const HEIGHT = 200;
-  const ERASE_RADIUS = 20;
   let isDrawing = false;
-
-  // 배경 이미지 로드
+  let currentWidth, currentHeight;
+  const ERASE_RADIUS = 20;
+  
+  // 배경 이미지와 오버레이 이미지 로드
   const bgImage = new Image();
-  bgImage.src = "test.jpg";
-
-  // 오버레이(덮개) 이미지 로드 - 여러분이 제작한 이미지
+  bgImage.src = "test.jpg";  // 스크래치 카드의 배경 이미지
+  
   const overlayImage = new Image();
-  overlayImage.src = "overlay.png"; // 여러분이 만든 이미지 파일명으로 변경
-
-  // 배경 이미지가 로드되면 캔버스 크기 설정 및 배경 그리기
-  bgImage.onload = () => {
-    backgroundCanvas.width = scratchCanvas.width = WIDTH;
-    backgroundCanvas.height = scratchCanvas.height = HEIGHT;
+  overlayImage.src = "overlay.png";  // 오버레이(덮개) 이미지
+  
+  // 컨테이너의 크기에 맞게 캔버스 사이즈 재설정
+  function setCanvasSize() {
+    const rect = container.getBoundingClientRect();
+    currentWidth = rect.width;
+    currentHeight = rect.height;
     
-    // 배경 이미지 그리기
-    bgCtx.drawImage(bgImage, 0, 0, WIDTH, HEIGHT);
-
-    // 오버레이 이미지가 로드되면 scratchCanvas에 그리기
-    overlayImage.onload = () => {
-      scratchCtx.drawImage(overlayImage, 0, 0, WIDTH, HEIGHT);
-    };
+    backgroundCanvas.width = scratchCanvas.width = currentWidth;
+    backgroundCanvas.height = scratchCanvas.height = currentHeight;
+    
+    // 배경 이미지 재그리기 (이미 로드되어 있다면)
+    if (bgImage.complete) {
+      bgCtx.drawImage(bgImage, 0, 0, currentWidth, currentHeight);
+    }
+    // 오버레이 이미지 재그리기 (이미 로드되어 있다면)
+    if (overlayImage.complete) {
+      scratchCtx.drawImage(overlayImage, 0, 0, currentWidth, currentHeight);
+    }
+  }
+  
+  // 창 크기 변경 시 캔버스 크기 업데이트
+  window.addEventListener("resize", setCanvasSize);
+  
+  // 배경 이미지 로드 완료 시 캔버스 사이즈 설정
+  bgImage.onload = () => {
+    setCanvasSize();
   };
-
+  
+  // 오버레이 이미지 로드 완료 시 그리기 (캔버스 사이즈가 정해진 후)
+  overlayImage.onload = () => {
+    scratchCtx.drawImage(overlayImage, 0, 0, currentWidth, currentHeight);
+  };
+  
   // 터치 및 마우스 좌표 계산 함수
   function getEventPosition(event) {
     const rect = scratchCanvas.getBoundingClientRect();
@@ -51,47 +67,46 @@ document.addEventListener("DOMContentLoaded", () => {
       };
     }
   }
-
+  
   // 긁기 시작
   function startDrawing(event) {
-    event.preventDefault(); // 터치 기본 동작 방지
+    event.preventDefault();
     isDrawing = true;
-    draw(event); // 첫 터치에서도 효과 적용
+    draw(event);
   }
-
+  
   // 긁기 진행
   function draw(event) {
     if (!isDrawing) return;
-    event.preventDefault(); // 터치 이동 시 스크롤 방지
+    event.preventDefault();
     
     const { x, y } = getEventPosition(event);
     
-    // destination-out 모드로 그리면, 해당 영역이 지워져 배경이 보임
+    // destination-out 모드로 그리면 오버레이 이미지의 해당 영역이 지워져 배경이 나타납니다.
     scratchCtx.globalCompositeOperation = "destination-out";
-    
     scratchCtx.beginPath();
     scratchCtx.arc(x, y, ERASE_RADIUS, 0, Math.PI * 2);
     scratchCtx.fill();
   }
-
+  
   // 긁기 종료
   function stopDrawing(event) {
     event.preventDefault();
     isDrawing = false;
   }
-
-  // 이벤트 리스너 등록 (마우스)
+  
+  // 마우스 이벤트 리스너 등록
   scratchCanvas.addEventListener("mousedown", startDrawing);
   scratchCanvas.addEventListener("mousemove", draw);
   scratchCanvas.addEventListener("mouseup", stopDrawing);
   scratchCanvas.addEventListener("mouseleave", stopDrawing);
-
-  // 이벤트 리스너 등록 (터치)
+  
+  // 터치 이벤트 리스너 등록
   scratchCanvas.addEventListener("touchstart", startDrawing, { passive: false });
   scratchCanvas.addEventListener("touchmove", draw, { passive: false });
   scratchCanvas.addEventListener("touchend", stopDrawing);
-
-  // 모바일 터치 스크롤 완전 차단
+  
+  // 모바일 터치 스크롤 방지
   window.addEventListener("touchmove", (event) => {
     event.preventDefault();
   }, { passive: false });
