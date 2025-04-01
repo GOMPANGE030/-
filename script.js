@@ -36,6 +36,22 @@ document.addEventListener("DOMContentLoaded", () => {
     scratchCtx.fillText("여기를 긁어보세요", WIDTH / 2, HEIGHT / 2);
   };
 
+  // 터치 & 마우스 좌표 가져오기
+  function getEventPosition(event) {
+    const rect = scratchCanvas.getBoundingClientRect();
+    if (event.touches) {
+      return {
+        x: event.touches[0].clientX - rect.left,
+        y: event.touches[0].clientY - rect.top
+      };
+    } else {
+      return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+      };
+    }
+  }
+
   // 긁기 기능
   function startDrawing(event) {
     event.preventDefault(); // 기본 터치 동작 방지
@@ -47,14 +63,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isDrawing) return;
     event.preventDefault(); // 터치 이동 시 스크롤 방지
     
-    const rect = scratchCanvas.getBoundingClientRect();
-    const offsetX = event.clientX - rect.left;
-    const offsetY = event.clientY - rect.top;
+    const { x, y } = getEventPosition(event);
     
     scratchCtx.globalCompositeOperation = "destination-out";
     
     scratchCtx.beginPath();
-    scratchCtx.arc(offsetX, offsetY, ERASE_RADIUS, 0, Math.PI * 2);
+    scratchCtx.arc(x, y, ERASE_RADIUS, 0, Math.PI * 2);
     scratchCtx.fill();
   }
 
@@ -70,8 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
   scratchCanvas.addEventListener("mouseleave", stopDrawing);
 
   // 모바일 터치 지원 (스크롤 방지 포함)
-  scratchCanvas.addEventListener("touchstart", (event) => startDrawing(event.touches[0]), { passive: false });
-  scratchCanvas.addEventListener("touchmove", (event) => draw(event.touches[0]), { passive: false });
+  scratchCanvas.addEventListener("touchstart", startDrawing, { passive: false });
+  scratchCanvas.addEventListener("touchmove", draw, { passive: false });
   scratchCanvas.addEventListener("touchend", stopDrawing);
 
   // 📌 모바일 화면 이동 완전 차단
