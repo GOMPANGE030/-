@@ -2,8 +2,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("scratchContainer");
   const backgroundCanvas = document.getElementById("backgroundCanvas");
   const scratchCanvas = document.getElementById("scratchCanvas");
+  const resultImage = document.getElementById("resultImage");
 
-  if (!container || !backgroundCanvas || !scratchCanvas) {
+  if (!container || !backgroundCanvas || !scratchCanvas || !resultImage) {
     console.error("Error: Required elements not found!");
     return;
   }
@@ -13,14 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
   let isDrawing = false;
   let currentWidth, currentHeight;
   const ERASE_RADIUS = 20;
-  let resultShown = false; // overlay fade-out가 한 번만 실행되도록
+  let resultShown = false; // 결과(페이드인, 페이드아웃)가 한 번만 실행되도록
   
   // 배경 이미지와 오버레이 이미지 로드
   const bgImage = new Image();
-  bgImage.src = "test.jpg";  // 스크래치 카드 배경 이미지
+  bgImage.src = "test.jpg"; // 스크래치 카드 배경 이미지
   
   const overlayImage = new Image();
-  overlayImage.src = "overlay.png";  // 오버레이(덮개) 이미지
+  overlayImage.src = "overlay.png"; // 오버레이(덮개) 이미지
   
   // 컨테이너의 크기에 맞게 캔버스 사이즈 재설정
   function setCanvasSize() {
@@ -31,28 +32,19 @@ document.addEventListener("DOMContentLoaded", () => {
     backgroundCanvas.width = scratchCanvas.width = currentWidth;
     backgroundCanvas.height = scratchCanvas.height = currentHeight;
     
-    // 배경 이미지 재그리기 (이미 로드되어 있다면)
+    // 배경 이미지 그리기
     if (bgImage.complete) {
       bgCtx.drawImage(bgImage, 0, 0, currentWidth, currentHeight);
     }
-    // 오버레이 이미지 재그리기 (이미 로드되어 있다면)
+    // 오버레이 이미지 그리기
     if (overlayImage.complete) {
       scratchCtx.drawImage(overlayImage, 0, 0, currentWidth, currentHeight);
     }
   }
   
-  // 창 크기 변경 시 캔버스 크기 업데이트
   window.addEventListener("resize", setCanvasSize);
-  
-  // 배경 이미지 로드 완료 시 캔버스 사이즈 설정
-  bgImage.onload = () => {
-    setCanvasSize();
-  };
-  
-  // 오버레이 이미지 로드 완료 시 그리기 (캔버스 사이즈가 정해진 후)
-  overlayImage.onload = () => {
-    scratchCtx.drawImage(overlayImage, 0, 0, currentWidth, currentHeight);
-  };
+  bgImage.onload = () => { setCanvasSize(); };
+  overlayImage.onload = () => { scratchCtx.drawImage(overlayImage, 0, 0, currentWidth, currentHeight); };
   
   // 터치 및 마우스 좌표 계산 함수
   function getEventPosition(event) {
@@ -70,8 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   
-  // 스크래치 진행 후 50% 이상 지워지면 overlay를 자동으로 모두 지우고, 
-  // background 이미지(test.jpg)가 보일 때 scratchCanvas가 서서히 페이드아웃 효과로 사라짐
+  // 스크래치 진행률 체크 함수 (50% 이상이면)
   function checkScratchCompletion() {
     const imageData = scratchCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height);
     let totalPixels = imageData.data.length / 4;
@@ -82,8 +73,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (transparentPixels / totalPixels > 0.5 && !resultShown) {
-      // overlay(스크래치 덮개)를 페이드아웃 처리하여 test.jpg(배경)가 보이도록 함
+      // overlay.png(스크래치 덮개)를 페이드아웃 시켜 완전히 사라지게 함
       scratchCanvas.classList.add("fade-out");
+      // 스크래치 카드 아래 result.png를 페이드인으로 서서히 나타나게 함
+      resultImage.classList.add("visible");
       resultShown = true;
     }
   }
@@ -101,14 +94,12 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     
     const { x, y } = getEventPosition(event);
-    
-    // destination-out 모드: overlay의 해당 영역을 지워 배경이 나타나게 함
+    // destination-out 모드: overlay의 해당 영역을 지워 배경(test.jpg)이 보이게 함
     scratchCtx.globalCompositeOperation = "destination-out";
     scratchCtx.beginPath();
     scratchCtx.arc(x, y, ERASE_RADIUS, 0, Math.PI * 2);
     scratchCtx.fill();
     
-    // 스크래치 완료 여부 체크
     checkScratchCompletion();
   }
   
@@ -118,19 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
     isDrawing = false;
   }
   
-  // 마우스 이벤트 리스너 등록
+  // 이벤트 리스너 등록 (마우스 및 터치)
   scratchCanvas.addEventListener("mousedown", startDrawing);
   scratchCanvas.addEventListener("mousemove", draw);
   scratchCanvas.addEventListener("mouseup", stopDrawing);
   scratchCanvas.addEventListener("mouseleave", stopDrawing);
-  
-  // 터치 이벤트 리스너 등록
   scratchCanvas.addEventListener("touchstart", startDrawing, { passive: false });
   scratchCanvas.addEventListener("touchmove", draw, { passive: false });
   scratchCanvas.addEventListener("touchend", stopDrawing);
-  
-  // 모바일 터치 스크롤 방지
-  window.addEventListener("touchmove", (event) => {
-    event.preventDefault();
-  }, { passive: false });
+  window.addEventListener("touchmove", (event) => { event.preventDefault(); }, { passive: false });
 });
