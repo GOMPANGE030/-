@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     scratchCtx.fillStyle = "#999";
     scratchCtx.fillRect(0, 0, WIDTH, HEIGHT);
     
-    scratchCtx.font = "20px sans-serif";
+    scratchCtx.font = "10px sans-serif";
     scratchCtx.fillStyle = "#000";
     scratchCtx.textAlign = "center";
     scratchCtx.textBaseline = "middle";
