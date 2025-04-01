@@ -3,23 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>우리동네 복권</title>
+  <title>스크래치 카드</title>
   <style>
     /* 페이지 전체 배경 (background.png 사용) */
     body {
       margin: 0;
       padding: 0;
-      text-align: center;
-      font-family: Arial, sans-serif;
       background: url('background.png') no-repeat center center fixed;
       background-size: cover;
+      font-family: Arial, sans-serif;
     }
-    /* 스크래치 카드 컨테이너 */
+    /* 스크래치 카드 컨테이너: 상단에 200px 여백 추가 */
     .wrapper {
       position: relative;
       width: 90%;
       max-width: 400px;
-      margin: 20px auto;
+      margin: 200px auto 20px auto;  /* 상단 200px, 하단 20px, 좌우 auto */
       aspect-ratio: 2 / 1;
     }
     /* 두 캔버스 모두 컨테이너 전체를 덮음 */
@@ -37,12 +36,6 @@
     }
     #scratchCanvas.fade-out {
       opacity: 0;
-    }
-    .result {
-      font-size: 1.5em;
-      margin-bottom: 10px;
-      position: relative;
-      z-index: 2;
     }
     /* 결과 이미지 스타일: 초기 opacity 0, 3초 동안 페이드인 */
     .result-image img {
@@ -71,9 +64,7 @@
   </style>
 </head>
 <body>
-  <h1> </h1>
   <div class="wrapper" id="scratchContainer">
-    <div class="result"> </div>
     <canvas id="backgroundCanvas"></canvas>
     <canvas id="scratchCanvas"></canvas>
   </div>
