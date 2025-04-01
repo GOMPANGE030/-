@@ -2,9 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("scratchContainer");
   const backgroundCanvas = document.getElementById("backgroundCanvas");
   const scratchCanvas = document.getElementById("scratchCanvas");
-  const resultImage = document.getElementById("resultImage");
 
-  if (!container || !backgroundCanvas || !scratchCanvas || !resultImage) {
+  if (!container || !backgroundCanvas || !scratchCanvas) {
     console.error("Error: Required elements not found!");
     return;
   }
@@ -14,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let isDrawing = false;
   let currentWidth, currentHeight;
   const ERASE_RADIUS = 20;
-  let resultShown = false; // 결과 이미지가 한 번만 표시되도록
+  let resultShown = false; // overlay fade-out가 한 번만 실행되도록
   
   // 배경 이미지와 오버레이 이미지 로드
   const bgImage = new Image();
@@ -71,7 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   
-  // 스크래치 진행 후 일정 비율(30%) 이상 지워지면, 오버레이를 완전히 지우고 결과 이미지를 페이드인 효과로 표시
+  // 스크래치 진행 후 50% 이상 지워지면 overlay를 자동으로 모두 지우고, 
+  // background 이미지(test.jpg)가 보일 때 scratchCanvas가 서서히 페이드아웃 효과로 사라짐
   function checkScratchCompletion() {
     const imageData = scratchCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height);
     let totalPixels = imageData.data.length / 4;
@@ -81,10 +81,9 @@ document.addEventListener("DOMContentLoaded", () => {
         transparentPixels++;
       }
     }
-    // 30% 이상이 지워졌으면 오버레이 전체를 클리어하고 결과 이미지 페이드인
-    if (transparentPixels / totalPixels > 0.3 && !resultShown) {
-      scratchCtx.clearRect(0, 0, scratchCanvas.width, scratchCanvas.height);
-      resultImage.classList.add("visible");
+    if (transparentPixels / totalPixels > 0.5 && !resultShown) {
+      // overlay(스크래치 덮개)를 페이드아웃 처리하여 test.jpg(배경)가 보이도록 함
+      scratchCanvas.classList.add("fade-out");
       resultShown = true;
     }
   }
@@ -103,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const { x, y } = getEventPosition(event);
     
-    // destination-out 모드로 그리면 오버레이 이미지의 해당 영역이 지워져 배경이 나타납니다.
+    // destination-out 모드: overlay의 해당 영역을 지워 배경이 나타나게 함
     scratchCtx.globalCompositeOperation = "destination-out";
     scratchCtx.beginPath();
     scratchCtx.arc(x, y, ERASE_RADIUS, 0, Math.PI * 2);
