@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>반응형 스크래치 카드 테스트</title>
   <style>
-    /* 페이지 전체에 배경 이미지 적용 */
+    /* 페이지 전체 배경 */
     body {
       margin: 0;
       padding: 0;
@@ -14,7 +14,7 @@
       background: url('background1.jpg') no-repeat center center fixed;
       background-size: cover;
     }
-    /* 캔버스 컨테이너: 너비는 90%로 최대 400px, 2:1 비율 유지 */
+    /* 스크래치 카드 컨테이너 */
     .wrapper {
       position: relative;
       width: 90%;
@@ -31,11 +31,10 @@
       width: 100%;
       height: 100%;
     }
-    /* scratchCanvas에 페이드아웃 효과 적용 */
+    /* 스크래치 캔버스 페이드아웃 효과 */
     #scratchCanvas {
       transition: opacity 3s ease-out;
     }
-    /* fade-out 클래스가 추가되면 overlay가 서서히 사라짐 */
     #scratchCanvas.fade-out {
       opacity: 0;
     }
@@ -45,6 +44,16 @@
       position: relative;
       z-index: 2;
     }
+    /* 결과 이미지 스타일: 초기 opacity 0, 3초 동안 페이드인 */
+    .result-image img {
+      max-width: 90%;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 3s ease-in;
+    }
+    .result-image img.visible {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -53,6 +62,10 @@
     <div class="result">안녕하세요, 화이팅.</div>
     <canvas id="backgroundCanvas"></canvas>
     <canvas id="scratchCanvas"></canvas>
+  </div>
+  <!-- 스크래치 카드 아래 결과 이미지 영역 -->
+  <div class="result-image">
+    <img id="resultImage" src="result.png" alt="Result Image">
   </div>
   <script src="script.js"></script>
 </body>
