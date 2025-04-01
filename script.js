@@ -73,4 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
   scratchCanvas.addEventListener("touchstart", (event) => startDrawing(event.touches[0]), { passive: false });
   scratchCanvas.addEventListener("touchmove", (event) => draw(event.touches[0]), { passive: false });
   scratchCanvas.addEventListener("touchend", stopDrawing);
+
+  // 📌 모바일 화면 이동 완전 차단
+  window.addEventListener("touchmove", (event) => {
+    event.preventDefault();
+  }, { passive: false });
 });
