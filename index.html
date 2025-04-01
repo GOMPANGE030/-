@@ -37,12 +37,18 @@
     #scratchCanvas.fade-out {
       opacity: 0;
     }
+    /* 결과 이미지 컨테이너 가운데 정렬 */
+    .result-image {
+      text-align: center;
+      margin: 20px auto;
+    }
     /* 결과 이미지 스타일: 초기 opacity 0, 3초 동안 페이드인 */
     .result-image img {
       max-width: 90%;
       border-radius: 8px;
       opacity: 0;
       transition: opacity 3s ease-in;
+      display: inline-block;
     }
     .result-image img.visible {
       opacity: 1;
