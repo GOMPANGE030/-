@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const backgroundCanvas = document.getElementById("backgroundCanvas");
   const scratchCanvas = document.getElementById("scratchCanvas");
   const resultImage = document.getElementById("resultImage");
-  
+
   if (!container || !backgroundCanvas || !scratchCanvas || !resultImage) {
     console.error("Error: Required elements not found!");
     return;
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
   
-  // 스크래치 진행 후 일정 비율 이상 지워지면 결과 이미지를 표시하는 함수
+  // 스크래치 진행 후 일정 비율 이상 지워지면 결과 이미지를 페이드인 효과로 표시하는 함수
   function checkScratchCompletion() {
     const imageData = scratchCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height);
     let totalPixels = imageData.data.length / 4;
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (transparentPixels / totalPixels > 0.5 && !resultShown) {  // 50% threshold
-      resultImage.style.display = "block";
+      resultImage.classList.add("visible");
       resultShown = true;
     }
   }
