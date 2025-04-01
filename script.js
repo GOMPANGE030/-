@@ -21,11 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $canvas.width = WIDTH * dpr;
     $canvas.height = HEIGHT * dpr;
     context.scale(dpr, dpr);
-
-    // 회색 덮개를 그림
-    context.fillStyle = "#999";
-    context.fillRect(0, 0, WIDTH, HEIGHT);
-
+   
     // 안내 문구 추가
     context.font = "20px sans-serif";
     context.fillStyle = "#000";
@@ -33,6 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
     context.textBaseline = "middle";
     context.fillText("여기를 긁어보세요", WIDTH / 2, HEIGHT / 2);
   };
+    
+    
+    // 회색 덮개를 그림
+    context.fillStyle = "#999";
+    context.fillRect(0, 0, WIDTH, HEIGHT);
+
 
   // 이미지가 로드되면 캔버스 초기화 실행
   image.onload = () => {
