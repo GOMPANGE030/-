@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const container = document.getElementById("scratchContainer");
   const backgroundCanvas = document.getElementById("backgroundCanvas");
   const scratchCanvas = document.getElementById("scratchCanvas");
-  if (!backgroundCanvas || !scratchCanvas) {
+  if (!backgroundCanvas || !scratchCanvas || !container) {
     console.error("Error: Canvas elements not found!");
     return;
   }
@@ -23,8 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // 배경 이미지 그리기
     bgCtx.drawImage(image, 0, 0, WIDTH, HEIGHT);
-
-    // 덮개 캔버스 설정 (회색 배경 + 텍스트 표시)
+    
+    // scratchCanvas를 완전 투명한 캔버스로 설정
     scratchCtx.fillStyle = "#999";
     scratchCtx.fillRect(0, 0, WIDTH, HEIGHT);
     
@@ -36,14 +37,18 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // 긁기 기능
-  function startDrawing() {
+  function startDrawing(event) {
     isDrawing = true;
+    draw(event); // 첫 터치에도 바로 효과 적용
   }
 
   function draw(event) {
     if (!isDrawing) return;
-
-    const { offsetX, offsetY } = event;
+    
+    const rect = scratchCanvas.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const offsetY = event.clientY - rect.top;
+    
     scratchCtx.globalCompositeOperation = "destination-out";
     
     scratchCtx.beginPath();
@@ -59,4 +64,10 @@ document.addEventListener("DOMContentLoaded", () => {
   scratchCanvas.addEventListener("mousedown", startDrawing);
   scratchCanvas.addEventListener("mousemove", draw);
   scratchCanvas.addEventListener("mouseup", stopDrawing);
+  scratchCanvas.addEventListener("mouseleave", stopDrawing);
+
+  // 모바일 터치 지원
+  scratchCanvas.addEventListener("touchstart", (event) => startDrawing(event.touches[0]));
+  scratchCanvas.addEventListener("touchmove", (event) => draw(event.touches[0]));
+  scratchCanvas.addEventListener("touchend", stopDrawing);
 });
