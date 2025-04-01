@@ -38,12 +38,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 긁기 기능
   function startDrawing(event) {
+    event.preventDefault(); // 기본 터치 동작 방지
     isDrawing = true;
     draw(event); // 첫 터치에도 바로 효과 적용
   }
 
   function draw(event) {
     if (!isDrawing) return;
+    event.preventDefault(); // 터치 이동 시 스크롤 방지
     
     const rect = scratchCanvas.getBoundingClientRect();
     const offsetX = event.clientX - rect.left;
@@ -56,7 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
     scratchCtx.fill();
   }
 
-  function stopDrawing() {
+  function stopDrawing(event) {
+    event.preventDefault();
     isDrawing = false;
   }
 
@@ -66,8 +69,8 @@ document.addEventListener("DOMContentLoaded", () => {
   scratchCanvas.addEventListener("mouseup", stopDrawing);
   scratchCanvas.addEventListener("mouseleave", stopDrawing);
 
-  // 모바일 터치 지원
-  scratchCanvas.addEventListener("touchstart", (event) => startDrawing(event.touches[0]));
-  scratchCanvas.addEventListener("touchmove", (event) => draw(event.touches[0]));
+  // 모바일 터치 지원 (스크롤 방지 포함)
+  scratchCanvas.addEventListener("touchstart", (event) => startDrawing(event.touches[0]), { passive: false });
+  scratchCanvas.addEventListener("touchmove", (event) => draw(event.touches[0]), { passive: false });
   scratchCanvas.addEventListener("touchend", stopDrawing);
 });
