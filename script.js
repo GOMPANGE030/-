@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // 배경 이미지와 오버레이 이미지 로드
   const bgImage = new Image();
-  bgImage.src = "test.jpg"; // 스크래치 카드 배경 이미지
+  bgImage.src = "pic.png"; // 스크래치 카드 배경 이미지
   
   const overlayImage = new Image();
   overlayImage.src = "overlay.png"; // 스크래치 덮개 이미지
