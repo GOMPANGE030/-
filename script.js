@@ -14,9 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 🎨 배경 이미지 로드
   const image = new Image();
-  image.src = "test.jpg"; // 복권 긁기 후 나타날 이미지
+  image.src = "test.jpg"; // 긁기 후 나타날 이미지
 
-  // 🎯 이미지 로드 후 실행
   image.onload = () => {
     // 캔버스 크기 설정
     $canvas.width = WIDTH;
@@ -25,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1️⃣ 배경 이미지 먼저 그림
     context.drawImage(image, 0, 0, WIDTH, HEIGHT);
 
-    // 2️⃣ 그 위에 회색 덮개 씌움
+    // 2️⃣ 덮개 설정 (완전히 불투명한 회색)
     context.fillStyle = "#999";
     context.fillRect(0, 0, WIDTH, HEIGHT);
 
@@ -35,9 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillText("여기를 긁어보세요", WIDTH / 2, HEIGHT / 2);
+
+    // 4️⃣ 덮개를 지울 수 있도록 globalCompositeOperation 설정
+    context.globalCompositeOperation = "destination-out";
   };
 
-  // 🎨 긁기 기능 (투명하게 지우기)
+  // 🎨 긁기 기능 (덮개 지우기)
   const handleDrawingStart = () => {
     isDrawing = true;
   };
@@ -46,7 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isDrawing) return;
 
     const { offsetX, offsetY } = event;
-    context.globalCompositeOperation = "destination-out"; // 지우기 모드
     context.beginPath();
     context.arc(offsetX, offsetY, ERASE_RADIUS, 0, 2 * Math.PI, false);
     context.fill();
