@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const scratchCtx = scratchCanvas.getContext("2d");
   const WIDTH = 400;
   const HEIGHT = 200;
-  const ERASE_RADIUS = 30;
+  const ERASE_RADIUS = 10;
   let isDrawing = false;
 
   // 배경 이미지 로드
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     scratchCtx.fillStyle = "#999";
     scratchCtx.fillRect(0, 0, WIDTH, HEIGHT);
     
-    scratchCtx.font = "10px sans-serif";
+    scratchCtx.font = "20px sans-serif";
     scratchCtx.fillStyle = "#000";
     scratchCtx.textAlign = "center";
     scratchCtx.textBaseline = "middle";
