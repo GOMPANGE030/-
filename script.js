@@ -5,15 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const context = $canvas.getContext("2d");
-  const WIDTH = 400;
-  const HEIGHT = 200;
-  const dpr = window.devicePixelRatio;
-  const ERASE_RADIUS = 30; // 지우는 반경
-  let isDrawing = false;
 
-  const image = new Image();
-  image.src = "test.jpg"; // 복권 긁기 후 나타날 이미지
 
   const initCanvas = () => {
     $canvas.style.width = `${WIDTH}px`;
@@ -57,7 +49,17 @@ document.addEventListener("DOMContentLoaded", () => {
     context.closePath();
     context.globalCompositeOperation = "source-over"; // 기본 모드 복귀
   };
+  const context = $canvas.getContext("2d");
+  const WIDTH = 400;
+  const HEIGHT = 200;
+  const dpr = window.devicePixelRatio;
+  const ERASE_RADIUS = 30; // 지우는 반경
+  let isDrawing = false;
 
+  const image = new Image();
+  image.src = "test.jpg"; // 복권 긁기 후 나타날 이미지
+  };
+  
   const handleDrawingEnd = () => {
     isDrawing = false;
   };
