@@ -16,13 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const image = new Image();
   image.src = "test.jpg"; // 복권 긁기 후 나타날 이미지
 
-  // 캔버스 초기화 (배경 + 긁기 레이어)
-  const initCanvas = () => {
-    $canvas.style.width = `${WIDTH}px`;
-    $canvas.style.height = `${HEIGHT}px`;
-    $canvas.width = WIDTH * dpr;
-    $canvas.height = HEIGHT * dpr;
-    context.scale(dpr, dpr);
+  // 🎯 이미지 로드 후 실행
+  image.onload = () => {
+    // 캔버스 크기 설정
+    $canvas.width = WIDTH;
+    $canvas.height = HEIGHT;
 
     // 1️⃣ 배경 이미지 먼저 그림
     context.drawImage(image, 0, 0, WIDTH, HEIGHT);
@@ -39,11 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
     context.fillText("여기를 긁어보세요", WIDTH / 2, HEIGHT / 2);
   };
 
-  // 🎯 이미지 로드 후 캔버스 초기화 실행
-  image.onload = () => {
-    initCanvas();
-  };
-
   // 🎨 긁기 기능 (투명하게 지우기)
   const handleDrawingStart = () => {
     isDrawing = true;
@@ -58,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
     context.arc(offsetX, offsetY, ERASE_RADIUS, 0, 2 * Math.PI, false);
     context.fill();
     context.closePath();
-    context.globalCompositeOperation = "source-over"; // 기본 모드 복귀
   };
 
   const handleDrawingEnd = () => {
