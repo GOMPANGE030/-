@@ -54,6 +54,20 @@
     .result-image img.visible {
       opacity: 1;
     }
+    /* panpan 이미지: 전체 화면에 고정, 제일 위에 위치, 초기 opacity 0, 3초 페이드인 */
+    .panpan {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 3s ease-in;
+      z-index: 9999;
+    }
+    .panpan.visible {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -67,6 +81,8 @@
   <div class="result-image">
     <img id="resultImage" src="result.png" alt="Result Image">
   </div>
+  <!-- panpan 이미지: 레이아웃 최상단에 고정 -->
+  <img id="panpanImage" class="panpan" src="panpan.png" alt="Panpan">
   <script src="script.js"></script>
 </body>
 </html>
