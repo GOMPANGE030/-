@@ -21,9 +21,6 @@
       max-width: 400px;
       margin: 20px auto;
       aspect-ratio: 2 / 1;
-      /* 구형 브라우저 지원을 위해 아래 패딩 트릭 사용 가능 */
-      /* height: 0;
-         padding-bottom: 50%; */
     }
     /* 캔버스는 컨테이너 전체를 덮음 */
     canvas {
@@ -40,6 +37,15 @@
       position: relative;
       z-index: 2;
     }
+    /* 결과 이미지 스타일 */
+    .result-image {
+      margin-top: 20px;
+    }
+    .result-image img {
+      max-width: 90%;
+      border-radius: 8px;
+      display: none; /* 초기에는 숨김 */
+    }
   </style>
 </head>
 <body>
@@ -48,6 +54,10 @@
     <div class="result">안녕하세요, 화이팅.</div>
     <canvas id="backgroundCanvas"></canvas>
     <canvas id="scratchCanvas"></canvas>
+  </div>
+  <!-- 스크래치 카드 아래에 결과 이미지를 송출 -->
+  <div class="result-image">
+    <img id="resultImage" src="result.jpg" alt="Result Image">
   </div>
   <script src="script.js"></script>
 </body>
