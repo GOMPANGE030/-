@@ -19,10 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // 배경 이미지와 오버레이 이미지 로드
   const bgImage = new Image();
-  bgImage.src = "pic.png"; // 스크래치 카드 배경 이미지
+  bgImage.src = "pic.png"; // 변경: 스크래치 카드 배경 이미지 (이전 test.jpg -> pic.png)
   
   const overlayImage = new Image();
-  overlayImage.src = "overlay.png"; // 스크래치 덮개 이미지
+  overlayImage.src = "overlay.png"; // 오버레이(덮개) 이미지
   
   // 컨테이너 크기에 맞게 캔버스 사이즈 재설정
   function setCanvasSize() {
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     if (transparentPixels / totalPixels > 0.5 && !resultShown) {
-      // overlay(스크래치 덮개)를 페이드아웃 시켜 배경(test.jpg)이 보이도록 함
+      // overlay(스크래치 덮개)를 페이드아웃 시켜 배경(pic.png)이 보이도록 함
       scratchCanvas.classList.add("fade-out");
       // 결과 이미지(result.png)를 페이드인
       resultImage.classList.add("visible");
@@ -101,8 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
     
     const { x, y } = getEventPosition(event);
-    
-    // destination-out 모드: overlay의 해당 영역을 지워 배경이 보이게 함
+    // destination-out 모드: overlay의 해당 영역을 지워 배경(pic.png)이 보이게 함
     scratchCtx.globalCompositeOperation = "destination-out";
     scratchCtx.beginPath();
     scratchCtx.arc(x, y, ERASE_RADIUS, 0, Math.PI * 2);
