@@ -22,7 +22,7 @@
       margin: 20px auto;
       aspect-ratio: 2 / 1;
     }
-    /* 캔버스는 컨테이너 전체를 덮음 */
+    /* 두 캔버스 모두 컨테이너 전체를 덮음 */
     canvas {
       border-radius: 8px;
       position: absolute;
@@ -31,22 +31,19 @@
       width: 100%;
       height: 100%;
     }
+    /* scratchCanvas에 페이드아웃 효과 적용 */
+    #scratchCanvas {
+      transition: opacity 3s ease-out;
+    }
+    /* fade-out 클래스가 추가되면 overlay가 서서히 사라짐 */
+    #scratchCanvas.fade-out {
+      opacity: 0;
+    }
     .result {
       font-size: 1.5em;
       margin-bottom: 10px;
       position: relative;
       z-index: 2;
-    }
-    /* 결과 이미지 스타일: 초기 opacity 0, 페이드인 효과 3초로 설정 */
-    .result-image img {
-      max-width: 90%;
-      border-radius: 8px;
-      opacity: 0;
-      transition: opacity 3s ease-in;
-    }
-    /* visible 클래스가 추가되면 opacity: 1 */
-    .result-image img.visible {
-      opacity: 1;
     }
   </style>
 </head>
@@ -56,10 +53,6 @@
     <div class="result">안녕하세요, 화이팅.</div>
     <canvas id="backgroundCanvas"></canvas>
     <canvas id="scratchCanvas"></canvas>
-  </div>
-  <!-- 스크래치 카드 아래에 결과 이미지를 송출 -->
-  <div class="result-image">
-    <img id="resultImage" src="result.jpg" alt="Result Image">
   </div>
   <script src="script.js"></script>
 </body>
