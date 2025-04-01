@@ -1,20 +1,23 @@
-const image = new Image(); // 이미지를 불러올 객체 생성
-image.src = "test.jpg"; // 🔹 원하는 이미지 파일 경로 입력
+const $canvas = document.getElementById("canvas");
+const context = $canvas.getContext("2d");
+const WIDTH = 400;
+const HEIGHT = 200;
+const dpr = window.devicePixelRatio;
 
-image.onload = () => {
-  const initCanvas = () => {
-    $canvas.style.width = `${WIDTH}px`;
-    $canvas.style.height = `${HEIGHT}px`;
-    $canvas.width = WIDTH * dpr;
-    $canvas.height = HEIGHT * dpr;
-    context.scale(dpr, dpr);
+// 이미지 객체 생성
+const image = new Image();
+image.src = "test.jpg"; // 배경으로 사용할 이미지 파일
 
-    // 1️⃣ 🔹 배경을 내가 만든 이미지로 설정
+const initCanvas = () => {
+  $canvas.style.width = `${WIDTH}px`;
+  $canvas.style.height = `${HEIGHT}px`;
+  $canvas.width = WIDTH * dpr;
+  $canvas.height = HEIGHT * dpr;
+  context.scale(dpr, dpr);
+
+  // 이미지가 로드되면 캔버스에 그리기
+  image.onload = () => {
     context.drawImage(image, 0, 0, WIDTH, HEIGHT);
-
-    // 2️⃣ 🔹 그 위를 회색으로 덮어서 긁으면 보이게 함
-    context.fillStyle = "#999";
-    context.fillRect(0, 0, WIDTH, HEIGHT);
 
     // 안내 문구 추가
     context.font = "20px sans-serif";
@@ -23,6 +26,6 @@ image.onload = () => {
     context.textBaseline = "middle";
     context.fillText("여기를 긁어보세요", WIDTH / 2, HEIGHT / 2);
   };
-
-  initCanvas();
 };
+
+initCanvas();
