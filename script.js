@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         transparentPixels++;
       }
     }
-    if (transparentPixels / totalPixels > 0.5 && !resultShown) {  // 50% threshold
+    if (transparentPixels / totalPixels > 0.4 && !resultShown) {  // 50% threshold
       resultImage.classList.add("visible");
       resultShown = true;
     }
