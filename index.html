@@ -42,7 +42,7 @@
       text-align: center;
       margin: 20px auto;
     }
-    /* 결과 이미지 스타일: 초기 opacity 0, 1초 동안 페이드인 (변경) */
+    /* 결과 이미지 스타일: 초기 opacity 0, 1초 동안 페이드인 */
     .result-image img {
       max-width: 90%;
       border-radius: 8px;
@@ -53,19 +53,35 @@
     .result-image img.visible {
       opacity: 1;
     }
-    /* panpan 이미지: 전체 화면 상단에 고정, 초기 opacity 0, 3초 페이드인 */
+    /* panpan 이미지: 전체 화면 상단에 고정 */
     .panpan {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       pointer-events: none;
-      opacity: 0;
-      transition: opacity 3s ease-in;
       z-index: 9999;
+      opacity: 0;
+      transform: scale(0);
     }
+    /* keyframes로 Overshoot(팡!) 효과 적용 */
+    @keyframes popIn {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      60% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    /* visible 클래스가 추가되면 애니메이션 실행 */
     .panpan.visible {
-      opacity: 1;
+      animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.320, 1.275) forwards;
     }
   </style>
 </head>
