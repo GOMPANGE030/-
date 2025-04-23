@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>스크래치 카드</title>
   <style>
     /* 페이지 전체 배경 (background.png 사용) */
@@ -18,7 +18,7 @@
       position: relative;
       width: 90%;
       max-width: 400px;
-      margin: 100px auto 20px auto;  /* 상단 100px, 하단 20px, 좌우 auto */
+      margin: 100px auto 20px auto;
       aspect-ratio: 2 / 1;
     }
     /* 두 캔버스 모두 컨테이너 전체를 덮음 */
@@ -42,7 +42,7 @@
       text-align: center;
       margin: 20px auto;
     }
-    /* 결과 이미지 스타일: 초기 opacity 0, 1초 동안 페이드인 */
+    /* 결과 이미지 스타일 */
     .result-image img {
       max-width: 90%;
       border-radius: 8px;
@@ -53,7 +53,7 @@
     .result-image img.visible {
       opacity: 1;
     }
-    /* panpan 이미지: 전체 화면 상단에 고정 */
+    /* panpan 이미지 */
     .panpan {
       position: fixed;
       top: 0;
@@ -64,7 +64,17 @@
       opacity: 0;
       transform: scale(0);
     }
-    /* keyframes로 Overshoot(팡!) 효과 적용 */
+    /* cele 이미지 (좌측 상단) */
+    .cele {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0;
+      transform: scale(0);
+    }
+    /* popIn keyframes */
     @keyframes popIn {
       0% {
         transform: scale(0);
@@ -79,8 +89,8 @@
         opacity: 1;
       }
     }
-    /* visible 클래스가 추가되면 애니메이션 실행 */
-    .panpan.visible {
+    .panpan.visible,
+    .cele.visible {
       animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.320, 1.275) forwards;
     }
   </style>
@@ -90,12 +100,11 @@
     <canvas id="backgroundCanvas"></canvas>
     <canvas id="scratchCanvas"></canvas>
   </div>
-  <!-- 스크래치 카드 아래 결과 이미지 영역 -->
   <div class="result-image">
-    <img id="resultImage" src="result.png" alt="Result Image">
+    <img id="resultImage" src="result.png" alt="Result Image" />
   </div>
-  <!-- panpan 이미지: 레이아웃 최상단에 고정 -->
-  <img id="panpanImage" class="panpan" src="panpan.png" alt="Panpan">
+  <img id="panpanImage" class="panpan" src="panpan.png" alt="Panpan" />
+  <img id="celeImage" class="cele" src="cele.png" alt="Cele" />
   <script src="script.js"></script>
 </body>
 </html>
