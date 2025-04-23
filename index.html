@@ -21,7 +21,9 @@
       margin: 100px auto 20px auto;
       aspect-ratio: 2 / 1;
     }
-    /* 두 캔버스 모두 컨테이너 전체를 덮음 */
+    /* 캔버스 레이어: 배경, cele, overlay */
+    canvas#backgroundCanvas { z-index: 1; }
+    canvas#scratchCanvas { z-index: 3; }
     canvas {
       border-radius: 8px;
       position: absolute;
@@ -30,19 +32,18 @@
       width: 100%;
       height: 100%;
     }
-    /* 스크래치 캔버스 페이드아웃 효과 */
+    /* 스크래치 캔버스 페이드아웃 */
     #scratchCanvas {
       transition: opacity 3s ease-out;
     }
     #scratchCanvas.fade-out {
       opacity: 0;
     }
-    /* 결과 이미지 컨테이너 가운데 정렬 */
+    /* 결과 이미지 */
     .result-image {
       text-align: center;
       margin: 20px auto;
     }
-    /* 결과 이미지 스타일 */
     .result-image img {
       max-width: 90%;
       border-radius: 8px;
@@ -60,51 +61,69 @@
       left: 0;
       width: 100%;
       pointer-events: none;
-      z-index: 9999;
-      opacity: 0;
-      transform: scale(0);
-    }
-    /* cele 이미지 (좌측 상단) */
-    .cele {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
       z-index: 10000;
       opacity: 0;
       transform: scale(0);
     }
-    /* popIn keyframes */
     @keyframes popIn {
-      0% {
-        transform: scale(0);
-        opacity: 0;
-      }
-      60% {
-        transform: scale(1.2);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
     }
-    .panpan.visible,
-    .cele.visible {
+    .panpan.visible {
       animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.320, 1.275) forwards;
+    }
+    /* cele 이미지 (wrapper 내부, r1~3 뒤, overlay 앞) */
+    .cele {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0;
+    }
+    @keyframes popInCele {
+      0% { transform: translateX(-50%) scale(0); opacity: 0; }
+      60% { transform: translateX(-50%) scale(1.2); opacity: 1; }
+      100% { transform: translateX(-50%) scale(1); opacity: 1; }
+    }
+    .cele.visible {
+      animation: popInCele 0.8s cubic-bezier(0.175, 0.885, 0.320, 1.275) forwards;
+    }
+    /* coin 이미지 (첫 로드 슬라이드인) */
+    .coin {
+      position: fixed;
+      top: 20px;
+      left: -100%;
+      transition: left 1s ease-out;
+      z-index: 10001;
+    }
+    .coin.visible {
+      left: 20px;
     }
   </style>
 </head>
 <body>
+
+  <!-- coin 이미지 -->
+  <img id="coinImage" class="coin" src="coin.png" alt="Coin"/>
+
+  <!-- 스크래치 카드 -->
   <div class="wrapper" id="scratchContainer">
     <canvas id="backgroundCanvas"></canvas>
+    <img id="celeImage" class="cele" src="cele.png" alt="Cele"/>
     <canvas id="scratchCanvas"></canvas>
   </div>
+
+  <!-- 결과 이미지 -->
   <div class="result-image">
-    <img id="resultImage" src="result.png" alt="Result Image" />
+    <img id="resultImage" src="result.png" alt="Result Image"/>
   </div>
-  <img id="panpanImage" class="panpan" src="panpan.png" alt="Panpan" />
-  <img id="celeImage" class="cele" src="cele.png" alt="Cele" />
+
+  <!-- panpan 이미지 -->
+  <img id="panpanImage" class="panpan" src="panpan.png" alt="Panpan"/>
+
   <script src="script.js"></script>
 </body>
 </html>
