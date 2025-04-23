@@ -1,136 +1,113 @@
 document.addEventListener("DOMContentLoaded", () => {
   const container        = document.getElementById("scratchContainer");
-  const backgroundCanvas = document.getElementById("backgroundCanvas");
+  const bgCanvas         = document.getElementById("backgroundCanvas");
   const scratchCanvas    = document.getElementById("scratchCanvas");
   const resultImage      = document.getElementById("resultImage");
   const panpanImage      = document.getElementById("panpanImage");
+  const failImage        = document.getElementById("failImage");
+  const celeImage        = document.getElementById("celeImage");
   const coinImage        = document.getElementById("coinImage");
 
-  if (!container || !backgroundCanvas || !scratchCanvas ||
-      !resultImage || !panpanImage || !coinImage) {
-    console.error("Error: Required elements not found!");
+  if (![container,bgCanvas,scratchCanvas,resultImage,panpanImage,failImage,celeImage,coinImage]
+      .every(el=>el)) {
+    console.error("Required elements missing");
     return;
   }
 
-  // coin 슬라이드인
-  setTimeout(() => coinImage.classList.add("visible"), 100);
+  // coin 등장
+  setTimeout(()=> coinImage.classList.add("visible"), 100);
 
-  const bgCtx       = backgroundCanvas.getContext("2d");
-  const scratchCtx  = scratchCanvas.getContext("2d");
-  let isDrawing     = false;
-  let currentWidth, currentHeight;
-  const ERASE_RADIUS = 20;
-  let resultShown   = false;
+  const bgCtx     = bgCanvas.getContext("2d");
+  const scratchCtx= scratchCanvas.getContext("2d");
+  let isDrawing   = false, resultShown = false;
+  const ERASE_R   = 20;
+  let cw, ch;
 
-  // 랜덤 결과 이미지 선택 (r1:40%, r2:40%, r3:20%)
-  const resultSources = [
-    { src: "r1.png", weight: 0.4 },
-    { src: "r2.png", weight: 0.4 },
-    { src: "r3.png", weight: 0.2 }
+  // 랜덤 결과 선택
+  const sources = [
+    { src: "r1.png", weight: 0.4, result: "result.png", fail:false },
+    { src: "r2.png", weight: 0.4, result: "result2.png", fail:false },
+    { src: "r3.png", weight: 0.2, result: "result3.png", fail:true  }
   ];
-  const rand = Math.random();
-  let cumulative = 0;
-  let selectedSrc = resultSources[0].src;
-  for (const img of resultSources) {
-    cumulative += img.weight;
-    if (rand < cumulative) {
-      selectedSrc = img.src;
-      break;
-    }
+  const rnd = Math.random();
+  let cum = 0, sel = sources[0];
+  for (let s of sources) {
+    cum += s.weight;
+    if (rnd < cum) { sel = s; break; }
   }
-  const bgImage       = new Image();
-  bgImage.src         = selectedSrc;
-  const overlayImage  = new Image();
-  overlayImage.src    = "overlay.png";
+  const bgImage      = new Image(); bgImage.src = sel.src;
+  const overlayImage = new Image(); overlayImage.src = "overlay.png";
 
-  function setCanvasSize() {
-    const rect = container.getBoundingClientRect();
-    currentWidth  = rect.width;
-    currentHeight = rect.height;
-
-    backgroundCanvas.width  = currentWidth;
-    backgroundCanvas.height = currentHeight;
-    scratchCanvas.width     = currentWidth;
-    scratchCanvas.height    = currentHeight;
-
+  function resizeCanvas() {
+    const r = container.getBoundingClientRect();
+    cw = r.width; ch = r.height;
+    bgCanvas.width = scratchCanvas.width = cw;
+    bgCanvas.height= scratchCanvas.height= ch;
     if (bgImage.complete) {
-      bgCtx.clearRect(0, 0, currentWidth, currentHeight);
-      bgCtx.drawImage(bgImage, 0, 0, currentWidth, currentHeight);
+      bgCtx.clearRect(0,0,cw,ch);
+      bgCtx.drawImage(bgImage,0,0,cw,ch);
     }
     if (overlayImage.complete) {
-      scratchCtx.clearRect(0, 0, currentWidth, currentHeight);
-      scratchCtx.drawImage(overlayImage, 0, 0, currentWidth, currentHeight);
+      scratchCtx.clearRect(0,0,cw,ch);
+      scratchCtx.drawImage(overlayImage,0,0,cw,ch);
     }
   }
+  window.addEventListener("resize", resizeCanvas);
+  bgImage.onload      = resizeCanvas;
+  overlayImage.onload = ()=> scratchCtx.drawImage(overlayImage,0,0,cw,ch);
 
-  window.addEventListener("resize", setCanvasSize);
-  bgImage.onload      = setCanvasSize;
-  overlayImage.onload = () => {
-    scratchCtx.drawImage(overlayImage, 0, 0, currentWidth, currentHeight);
-  };
-
-  function getEventPosition(event) {
-    const rect = scratchCanvas.getBoundingClientRect();
-    if (event.touches) {
-      return {
-        x: event.touches[0].clientX - rect.left,
-        y: event.touches[0].clientY - rect.top
-      };
-    } else {
-      return {
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top
-      };
+  function getPos(e) {
+    const r = scratchCanvas.getBoundingClientRect();
+    if (e.touches) {
+      return { x: e.touches[0].clientX-r.left, y: e.touches[0].clientY-r.top };
     }
+    return { x: e.clientX-r.left, y: e.clientY-r.top };
   }
 
-  function checkScratchCompletion() {
-    const imageData = scratchCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height);
-    const totalPixels = imageData.data.length / 4;
-    let transparentPixels = 0;
-
-    for (let i = 0; i < imageData.data.length; i += 4) {
-      if (imageData.data[i + 3] < 128) transparentPixels++;
-    }
-
-    if (transparentPixels / totalPixels > 0.5 && !resultShown) {
+  function checkComplete() {
+    const imgd = scratchCtx.getImageData(0,0,cw,ch).data;
+    const total = imgd.length/4;
+    let trans = 0;
+    for (let i=3; i<imgd.length; i+=4) if (imgd[i]<128) trans++;
+    if (trans/total>0.5 && !resultShown) {
       scratchCanvas.classList.add("fade-out");
+
+      // 결과 이미지 교체 및 표시
+      resultImage.src = sel.result;
       resultImage.classList.add("visible");
-      panpanImage.classList.add("visible");
+
+      // 성공/실패 이펙트
+      if (sel.fail) {
+        failImage.classList.add("visible");
+      } else {
+        panpanImage.classList.add("visible");
+      }
+
+      // celebration
+      celeImage.classList.add("visible");
       resultShown = true;
     }
   }
 
-  function startDrawing(e) {
-    e.preventDefault();
-    isDrawing = true;
-    draw(e);
-  }
-
-  function draw(e) {
+  function startDraw(e){ e.preventDefault(); isDrawing=true; draw(e); }
+  function draw(e){
     if (!isDrawing) return;
     e.preventDefault();
-
-    const { x, y } = getEventPosition(e);
-    scratchCtx.globalCompositeOperation = "destination-out";
+    const {x,y}=getPos(e);
+    scratchCtx.globalCompositeOperation="destination-out";
     scratchCtx.beginPath();
-    scratchCtx.arc(x, y, ERASE_RADIUS, 0, Math.PI * 2);
+    scratchCtx.arc(x,y,ERASE_R,0,Math.PI*2);
     scratchCtx.fill();
-
-    checkScratchCompletion();
+    checkComplete();
   }
+  function stopDraw(e){ e.preventDefault(); isDrawing=false; }
 
-  function stopDrawing(e) {
-    e.preventDefault();
-    isDrawing = false;
-  }
-
-  scratchCanvas.addEventListener("mousedown", startDrawing);
+  scratchCanvas.addEventListener("mousedown", startDraw);
   scratchCanvas.addEventListener("mousemove", draw);
-  scratchCanvas.addEventListener("mouseup", stopDrawing);
-  scratchCanvas.addEventListener("mouseleave", stopDrawing);
-  scratchCanvas.addEventListener("touchstart", startDrawing, { passive: false });
-  scratchCanvas.addEventListener("touchmove", draw, { passive: false });
-  scratchCanvas.addEventListener("touchend", stopDrawing);
-  window.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
+  scratchCanvas.addEventListener("mouseup", stopDraw);
+  scratchCanvas.addEventListener("mouseleave", stopDraw);
+  scratchCanvas.addEventListener("touchstart", startDraw, {passive:false});
+  scratchCanvas.addEventListener("touchmove", draw, {passive:false});
+  scratchCanvas.addEventListener("touchend", stopDraw);
+  window.addEventListener("touchmove", e=>e.preventDefault(), {passive:false});
 });
