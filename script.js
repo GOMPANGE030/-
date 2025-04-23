@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const container         = document.getElementById("scratchContainer");
-  const backgroundCanvas  = document.getElementById("backgroundCanvas");
-  const scratchCanvas     = document.getElementById("scratchCanvas");
-  const resultImage       = document.getElementById("resultImage");
-  const panpanImage       = document.getElementById("panpanImage");
-  const celeImage         = document.getElementById("celeImage");
-  const coinImage         = document.getElementById("coinImage");
+  const container        = document.getElementById("scratchContainer");
+  const backgroundCanvas = document.getElementById("backgroundCanvas");
+  const scratchCanvas    = document.getElementById("scratchCanvas");
+  const resultImage      = document.getElementById("resultImage");
+  const panpanImage      = document.getElementById("panpanImage");
+  const celeImage        = document.getElementById("celeImage");
+  const coinImage        = document.getElementById("coinImage");
 
   if (!container || !backgroundCanvas || !scratchCanvas ||
       !resultImage || !panpanImage || !celeImage || !coinImage) {
@@ -39,19 +39,20 @@ document.addEventListener("DOMContentLoaded", () => {
       break;
     }
   }
-  const bgImage = new Image();
-  bgImage.src = selectedSrc;
-
-  const overlayImage = new Image();
-  overlayImage.src = "overlay.png";
+  const bgImage     = new Image();
+  bgImage.src       = selectedSrc;
+  const overlayImage= new Image();
+  overlayImage.src  = "overlay.png";
 
   function setCanvasSize() {
     const rect = container.getBoundingClientRect();
     currentWidth  = rect.width;
     currentHeight = rect.height;
 
-    backgroundCanvas.width = scratchCanvas.width  = currentWidth;
-    backgroundCanvas.height= scratchCanvas.height = currentHeight;
+    backgroundCanvas.width  = currentWidth;
+    backgroundCanvas.height = currentHeight;
+    scratchCanvas.width     = currentWidth;
+    scratchCanvas.height    = currentHeight;
 
     if (bgImage.complete) {
       bgCtx.clearRect(0, 0, currentWidth, currentHeight);
@@ -64,8 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   window.addEventListener("resize", setCanvasSize);
-  bgImage.onload     = setCanvasSize;
-  overlayImage.onload= () => {
+  bgImage.onload      = setCanvasSize;
+  overlayImage.onload = () => {
     scratchCtx.drawImage(overlayImage, 0, 0, currentWidth, currentHeight);
   };
 
@@ -86,35 +87,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function checkScratchCompletion() {
     const imageData = scratchCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height);
-    let totalPixels       = imageData.data.length / 4;
+    const totalPixels = imageData.data.length / 4;
     let transparentPixels = 0;
 
     for (let i = 0; i < imageData.data.length; i += 4) {
-      if (imageData.data[i + 3] < 128) {
-        transparentPixels++;
-      }
+      if (imageData.data[i + 3] < 128) transparentPixels++;
     }
 
     if (transparentPixels / totalPixels > 0.5 && !resultShown) {
       scratchCanvas.classList.add("fade-out");
-      resultImage.classList.add("visible");
-      panpanImage.classList.add("visible");
-      celeImage.classList.add("visible");
+      resultImage .classList.add("visible");
+      panpanImage .classList.add("visible");
+      celeImage   .classList.add("visible");
       resultShown = true;
     }
   }
 
-  function startDrawing(event) {
-    event.preventDefault();
+  function startDrawing(e) {
+    e.preventDefault();
     isDrawing = true;
-    draw(event);
+    draw(e);
   }
 
-  function draw(event) {
+  function draw(e) {
     if (!isDrawing) return;
-    event.preventDefault();
+    e.preventDefault();
 
-    const { x, y } = getEventPosition(event);
+    const { x, y } = getEventPosition(e);
     scratchCtx.globalCompositeOperation = "destination-out";
     scratchCtx.beginPath();
     scratchCtx.arc(x, y, ERASE_RADIUS, 0, Math.PI * 2);
@@ -123,8 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
     checkScratchCompletion();
   }
 
-  function stopDrawing(event) {
-    event.preventDefault();
+  function stopDrawing(e) {
+    e.preventDefault();
     isDrawing = false;
   }
 
