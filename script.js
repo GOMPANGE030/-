@@ -77,7 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
       scratchCanvas.classList.add("fade-out");
 
       // 결과 이미지 교체 및 표시
-      resultImage.src = sel.result; resultImage.classList.add("visible");
+      resultImage.src = sel.result;
+      resultImage.classList.add("visible");
 
       // 성공/실패 이펙트
       if (sel.fail) failImage.classList.add("visible");
