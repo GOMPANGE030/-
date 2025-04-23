@@ -5,11 +5,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultImage = document.getElementById("resultImage");
   const panpanImage = document.getElementById("panpanImage");
   const celeImage = document.getElementById("celeImage");
+  const coinImage = document.getElementById("coinImage");
 
-  if (!container || !backgroundCanvas || !scratchCanvas || !resultImage || !panpanImage || !celeImage) {
+  if (!container || !backgroundCanvas || !scratchCanvas 
+      || !resultImage || !panpanImage || !celeImage || !coinImage) {
     console.error("Error: Required elements not found!");
     return;
   }
+
+  // coin 슬라이드인
+  setTimeout(() => coinImage.classList.add("visible"), 100);
 
   const bgCtx = backgroundCanvas.getContext("2d");
   const scratchCtx = scratchCanvas.getContext("2d");
@@ -59,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   window.addEventListener("resize", setCanvasSize);
-  bgImage.onload = () => { setCanvasSize(); };
+  bgImage.onload = setCanvasSize;
   overlayImage.onload = () => {
     scratchCtx.drawImage(overlayImage, 0, 0, currentWidth, currentHeight);
   };
@@ -130,5 +135,5 @@ document.addEventListener("DOMContentLoaded", () => {
   scratchCanvas.addEventListener("touchstart", startDrawing, { passive: false });
   scratchCanvas.addEventListener("touchmove", draw, { passive: false });
   scratchCanvas.addEventListener("touchend", stopDrawing);
-  window.addEventListener("touchmove", (event) => { event.preventDefault(); }, { passive: false });
+  window.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
 });
