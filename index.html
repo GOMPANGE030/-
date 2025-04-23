@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>스크래치 카드</title>
   <style>
-    /* 페이지 전체 배경 (background.png 사용) */
+    /* 페이지 전체 배경 */
     body {
       margin: 0;
       padding: 0;
@@ -13,15 +13,17 @@
       background-size: cover;
       font-family: Arial, sans-serif;
     }
-    /* 스크래치 카드 컨테이너: 상단에 100px 여백 추가 */
+
+    /* 스크래치 카드 컨테이너 */
     .wrapper {
       position: relative;
       width: 90%;
       max-width: 400px;
-      margin: 100px auto 20px auto;
+      margin: 100px auto 20px;
       aspect-ratio: 2 / 1;
     }
-    /* 캔버스 레이어: 배경, cele, overlay */
+
+    /* 캔버스 레이어 */
     canvas#backgroundCanvas { z-index: 1; }
     canvas#scratchCanvas    { z-index: 3; }
     canvas {
@@ -30,13 +32,13 @@
       top: 0; left: 0;
       width: 100%; height: 100%;
     }
-    /* 스크래치 캔버스 페이드아웃 */
     #scratchCanvas {
       transition: opacity 3s ease-out;
     }
     #scratchCanvas.fade-out {
       opacity: 0;
     }
+
     /* 결과 이미지 */
     .result-image {
       text-align: center;
@@ -52,6 +54,7 @@
     .result-image img.visible {
       opacity: 1;
     }
+
     /* panpan 이미지 */
     .panpan {
       position: fixed;
@@ -68,36 +71,53 @@
       100% { transform: scale(1);   opacity: 1; }
     }
     .panpan.visible {
-      animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.320, 1.275) forwards;
+      animation: popIn 0.8s cubic-bezier(0.175,0.885,0.320,1.275) forwards;
     }
-    /* cele 이미지 (wrapper 내부, 배경Canvas 위, overlay 앞) */
+
+    /* cele 이미지 (상대 단위 + responsive) */
     .cele {
       position: absolute;
-      top: 30px;
-      left: 100px;
+      width: 30%;
+      top: 5%;
+      left: 10%;
       transform: scale(0);
+      transform-origin: center center;
       pointer-events: none;
       z-index: 2;
       opacity: 0;
     }
     @keyframes popInCele {
       0%   { transform: scale(0);   opacity: 0; }
-      60%  { transform: scale(0.36); opacity: 1; }
-      100% { transform: scale(0.3);  opacity: 1; }
+      60%  { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1);   opacity: 1; }
     }
     .cele.visible {
-      animation: popInCele 0.8s cubic-bezier(0.175, 0.885, 0.320, 1.275) forwards;
+      animation: popInCele 0.8s cubic-bezier(0.175,0.885,0.320,1.275) forwards;
     }
+
     /* coin 이미지 (첫 로드 슬라이드인) */
     .coin {
       position: fixed;
-      top: 20px;
-      left: -100%;
-      transition: left 1s ease-out;
+      top: 5%;
+      left: 0;
+      transform: translateX(-100%);
+      transition: transform 1s ease-out;
       z-index: 10001;
     }
     .coin.visible {
-      left: 20px;
+      transform: translateX(0);
+    }
+
+    /* 모바일용 미디어쿼리 */
+    @media (max-width: 480px) {
+      .cele {
+        width: 50%;
+        top: 8%;
+        left: 5%;
+      }
+      .coin {
+        top: 8%;
+      }
     }
   </style>
 </head>
@@ -109,18 +129,5 @@
   <!-- 스크래치 카드 -->
   <div class="wrapper" id="scratchContainer">
     <canvas id="backgroundCanvas"></canvas>
-    <img    id="celeImage"       class="cele"            src="cele.png"    alt="Cele"/>
-    <canvas id="scratchCanvas"></canvas>
-  </div>
-
-  <!-- 결과 이미지 -->
-  <div class="result-image">
-    <img id="resultImage" src="result.png" alt="Result Image"/>
-  </div>
-
-  <!-- panpan 이미지 -->
-  <img id="panpanImage" class="panpan" src="panpan.png" alt="Panpan"/>
-
-  <script src="script.js"></script>
-</body>
-</html>
+    <img    id="celeImage" class="cele" src="cele.png" alt="Cele"/>
+    <
