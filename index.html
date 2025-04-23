@@ -5,40 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>스크래치 카드</title>
   <style>
-    /* 페이지 전체 배경 */
+    /* 페이지 전체 배경 (background.png 사용) */
     body {
       margin: 0;
-      padding: 10px 0 0 0; /* 상단 10px 패딩 추가 */
+      padding: 10px 0 0 0; /* 상단 10px 패딩 */
       background: url('background.png') no-repeat;
       background-position: calc(50% - 10px) center; /* 중앙에서 좌측으로 10px 이동 */
       background-size: cover;
-      background-attachment: scroll;
+      background-attachment: scroll; /* 모바일 왜곡 방지 */
       font-family: Arial, sans-serif;
     }
-    /* 스크래치 카드 컨테이너 (원래 100px 상단 여백) */
+
+    /* 스크래치 카드 컨테이너 */
     .wrapper {
       position: relative;
       width: 90%;
       max-width: 400px;
-      margin: 100px auto 20px; /* 100px 상단 여백, 하단 20px */
+      margin: 100px auto 20px; /* 원래 100px 상단 여백 */
       aspect-ratio: 2 / 1;
     }
+
     /* 캔버스 레이어 */
     canvas#backgroundCanvas { z-index: 1; }
     canvas#scratchCanvas    { z-index: 2; }
     canvas {
-      position: absolute;
-      top: 0; left: 0;
+      position: absolute; top: 0; left: 0;
       width: 100%; height: 100%;
       border-radius: 8px;
     }
-    /* 스크래치 페이드아웃 */
     #scratchCanvas {
       transition: opacity 3s ease-out;
     }
     #scratchCanvas.fade-out {
       opacity: 0;
     }
+
     /* 결과 이미지 */
     .result-image {
       text-align: center;
@@ -54,14 +55,12 @@
     .result-image img.visible {
       opacity: 1;
     }
+
     /* 성공 이펙트 panpan */
     .panpan {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100%; pointer-events: none;
-      z-index: 10000;
-      opacity: 0;
-      transform: scale(0);
+      z-index: 10000; opacity: 0; transform: scale(0);
     }
     @keyframes popInPan {
       0%   { transform: scale(0); opacity: 0; }
@@ -71,11 +70,13 @@
     .panpan.visible {
       animation: popInPan 0.8s cubic-bezier(0.175,0.885,0.320,1.275) forwards;
     }
+
     /* 실패 이펙트 failEff */
     .failEff {
       position: fixed;
       top: -150px; /* 숨겨진 상태 */
-      left: 50%; transform: translateX(-50%);
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 10000; pointer-events: none;
       opacity: 0;
       transition: top 0.5s ease-out, opacity 0.5s ease-out;
@@ -83,21 +84,24 @@
     .failEff.visible {
       top: 0; opacity: 1;
     }
+
     /* celebration cele */
     .cele {
       position: absolute;
       top: 30px; left: 100px;
-      transform: scale(0); pointer-events: none;
+      transform: scale(0);
+      pointer-events: none;
       z-index: 2; opacity: 0;
     }
     @keyframes popInCele {
-      0%   { transform: scale(0); opacity: 0; }
+      0%   { transform: scale(0);   opacity: 0; }
       60%  { transform: scale(0.36); opacity: 1; }
       100% { transform: scale(0.3);  opacity: 1; }
     }
     .cele.visible {
       animation: popInCele 0.8s cubic-bezier(0.175,0.885,0.320,1.275) forwards;
     }
+
     /* coin 이미지 (위치/스케일 고정) */
     .coin {
       position: fixed;
@@ -121,7 +125,7 @@
   <!-- 스크래치 카드 -->
   <div class="wrapper" id="scratchContainer">
     <canvas id="backgroundCanvas"></canvas>
-    <img id="celeImage" class="cele" src="cele.png" alt="Celebration"/>
+    <img    id="celeImage" class="cele"    src="cele.png"    alt="Celebration"/>
     <canvas id="scratchCanvas"></canvas>
   </div>
 
