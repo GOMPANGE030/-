@@ -77,15 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
       scratchCanvas.classList.add("fade-out");
 
       // 결과 이미지 교체 및 표시
-      resultImage.src = sel.result;
-      resultImage.classList.add("visible");
+      resultImage.src = sel.result; resultImage.classList.add("visible");
 
       // 성공/실패 이펙트
-      if (sel.fail) {
-        failImage.classList.add("visible");
-      } else {
-        panpanImage.classList.add("visible");
-      }
+      if (sel.fail) failImage.classList.add("visible");
+      else panpanImage.classList.add("visible");
 
       // celebration
       celeImage.classList.add("visible");
@@ -100,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const { x, y } = getPos(e);
     scratchCtx.globalCompositeOperation = "destination-out";
     scratchCtx.beginPath();
-    scratchCtx.arc(x, y, ERASE_R, 0, Math.PI * 2);
+    scratchCtx.arc(x, y, ERASE_R, 0, Math.PI*2);
     scratchCtx.fill();
     checkComplete();
   }
