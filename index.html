@@ -9,7 +9,8 @@
     body {
       margin: 0;
       padding: 10px 0 0 0; /* 상단 10px 패딩 추가 */
-      background: url('background.png') no-repeat center center;
+      background: url('background.png') no-repeat;
+      background-position: calc(50% - 10px) center; /* 중앙에서 좌측으로 10px 이동 */
       background-size: cover;
       background-attachment: scroll;
       font-family: Arial, sans-serif;
@@ -57,8 +58,7 @@
     .panpan {
       position: fixed;
       top: 0; left: 0;
-      width: 100%;
-      pointer-events: none;
+      width: 100%; pointer-events: none;
       z-index: 10000;
       opacity: 0;
       transform: scale(0);
@@ -66,7 +66,7 @@
     @keyframes popInPan {
       0%   { transform: scale(0); opacity: 0; }
       60%  { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1);   opacity: 1; }
     }
     .panpan.visible {
       animation: popInPan 0.8s cubic-bezier(0.175,0.885,0.320,1.275) forwards;
@@ -75,10 +75,8 @@
     .failEff {
       position: fixed;
       top: -150px; /* 숨겨진 상태 */
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10000;
-      pointer-events: none;
+      left: 50%; transform: translateX(-50%);
+      z-index: 10000; pointer-events: none;
       opacity: 0;
       transition: top 0.5s ease-out, opacity 0.5s ease-out;
     }
@@ -89,15 +87,13 @@
     .cele {
       position: absolute;
       top: 30px; left: 100px;
-      transform: scale(0);
-      pointer-events: none;
-      z-index: 2;
-      opacity: 0;
+      transform: scale(0); pointer-events: none;
+      z-index: 2; opacity: 0;
     }
     @keyframes popInCele {
       0%   { transform: scale(0); opacity: 0; }
       60%  { transform: scale(0.36); opacity: 1; }
-      100% { transform: scale(0.3); opacity: 1; }
+      100% { transform: scale(0.3);  opacity: 1; }
     }
     .cele.visible {
       animation: popInCele 0.8s cubic-bezier(0.175,0.885,0.320,1.275) forwards;
@@ -125,7 +121,7 @@
   <!-- 스크래치 카드 -->
   <div class="wrapper" id="scratchContainer">
     <canvas id="backgroundCanvas"></canvas>
-    <img    id="celeImage" class="cele" src="cele.png" alt="Celebration"/>
+    <img id="celeImage" class="cele" src="cele.png" alt="Celebration"/>
     <canvas id="scratchCanvas"></canvas>
   </div>
 
