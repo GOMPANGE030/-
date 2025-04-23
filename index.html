@@ -9,10 +9,9 @@
     body {
       margin: 0;
       padding: 0;
-      /* 모바일에서 fixed 백그라운드 왜곡 방지 */
       background: url('background.png') no-repeat center center;
       background-size: cover;
-      background-attachment: scroll;
+      background-attachment: scroll; /* 모바일 왜곡 방지 */
       font-family: Arial, sans-serif;
     }
     /* 스크래치 카드 컨테이너 */
@@ -60,17 +59,17 @@
       z-index: 10000; opacity: 0; transform: scale(0);
     }
     @keyframes popInPan {
-      0%   { transform: scale(0);   opacity: 0; }
-      60%  { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1);   opacity: 1; }
+      0%   {transform: scale(0); opacity: 0;}
+      60%  {transform: scale(1.2); opacity: 1;}
+      100% {transform: scale(1); opacity: 1;}
     }
     .panpan.visible {
-      animation: popInPan 0.8s cubic-bezier(0.175, 0.885, 0.320, 1.275) forwards;
+      animation: popInPan 0.8s cubic-bezier(0.175,0.885,0.320,1.275) forwards;
     }
     /* faileff (실패 슬라이드 이펙트) */
     .failEff {
       position: fixed;
-      top: -150px;     /* 화면 위쪽 숨김 */
+      top: -150px; /* 화면 위쪽 숨김 */
       left: 50%;
       transform: translateX(-50%);
       z-index: 10000; pointer-events: none;
@@ -78,8 +77,7 @@
       transition: top 0.5s ease-out, opacity 0.5s ease-out;
     }
     .failEff.visible {
-      top: 0;        /* 화면 상단으로 슬라이드 */
-      opacity: 1;
+      top: 0; opacity: 1; /* 화면 상단으로 슬라이드 */
     }
     /* cele 이미지 */
     .cele {
@@ -90,17 +88,18 @@
       z-index: 2; opacity: 0;
     }
     @keyframes popInCele {
-      0%   { transform: scale(0);   opacity: 0; }
-      60%  { transform: scale(0.36); opacity: 1; }
-      100% { transform: scale(0.3);  opacity: 1; }
+      0%   {transform: scale(0); opacity: 0;}
+      60%  {transform: scale(0.36); opacity: 1;}
+      100% {transform: scale(0.3);  opacity: 1;}
     }
     .cele.visible {
-      animation: popInCele 0.8s cubic-bezier(0.175, 0.885, 0.320, 1.275) forwards;
+      animation: popInCele 0.8s cubic-bezier(0.175,0.885,0.320,1.275) forwards;
     }
-    /* coin 이미지 */
+    /* coin 이미지 (스케일 조정 및 위치 고정) */
     .coin {
       position: fixed;
-      top: 30px; left: 100px;
+      top: 50px;
+      left: -200px;
       transform: scale(0);
       pointer-events: none;
       z-index: 10001;
@@ -119,7 +118,7 @@
   <!-- 스크래치 카드 -->
   <div class="wrapper" id="scratchContainer">
     <canvas id="backgroundCanvas"></canvas>
-    <img    id="celeImage" class="cele"    src="cele.png"    alt="Celebration"/>
+    <img id="celeImage" class="cele" src="cele.png" alt="Celebration"/>
     <canvas id="scratchCanvas"></canvas>
   </div>
 
@@ -128,10 +127,10 @@
     <img id="resultImage" src="result.png" alt="Result"/>
   </div>
 
-  <!-- 성공 panpan 이미지 -->
+  <!-- 성공 이펙트 -->
   <img id="panpanImage" class="panpan" src="panpan.png" alt="Success"/>
 
-  <!-- 실패 failEff 이미지 -->
+  <!-- 실패 이펙트 -->
   <img id="failImage" class="failEff" src="faileff.png" alt="FailEffect"/>
 
   <script src="script.js"></script>
