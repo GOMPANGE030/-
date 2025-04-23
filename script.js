@@ -4,11 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const scratchCanvas    = document.getElementById("scratchCanvas");
   const resultImage      = document.getElementById("resultImage");
   const panpanImage      = document.getElementById("panpanImage");
-  const celeImage        = document.getElementById("celeImage");
   const coinImage        = document.getElementById("coinImage");
 
   if (!container || !backgroundCanvas || !scratchCanvas ||
-      !resultImage || !panpanImage || !celeImage || !coinImage) {
+      !resultImage || !panpanImage || !coinImage) {
     console.error("Error: Required elements not found!");
     return;
   }
@@ -39,10 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
       break;
     }
   }
-  const bgImage     = new Image();
-  bgImage.src       = selectedSrc;
-  const overlayImage= new Image();
-  overlayImage.src  = "overlay.png";
+  const bgImage       = new Image();
+  bgImage.src         = selectedSrc;
+  const overlayImage  = new Image();
+  overlayImage.src    = "overlay.png";
 
   function setCanvasSize() {
     const rect = container.getBoundingClientRect();
@@ -96,9 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (transparentPixels / totalPixels > 0.5 && !resultShown) {
       scratchCanvas.classList.add("fade-out");
-      resultImage .classList.add("visible");
-      panpanImage .classList.add("visible");
-      celeImage   .classList.add("visible");
+      resultImage.classList.add("visible");
+      panpanImage.classList.add("visible");
       resultShown = true;
     }
   }
