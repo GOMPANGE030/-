@@ -1,14 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("scratchContainer");
-  const backgroundCanvas = document.getElementById("backgroundCanvas");
-  const scratchCanvas = document.getElementById("scratchCanvas");
-  const resultImage = document.getElementById("resultImage");
-  const panpanImage = document.getElementById("panpanImage");
-  const celeImage = document.getElementById("celeImage");
-  const coinImage = document.getElementById("coinImage");
+  const container         = document.getElementById("scratchContainer");
+  const backgroundCanvas  = document.getElementById("backgroundCanvas");
+  const scratchCanvas     = document.getElementById("scratchCanvas");
+  const resultImage       = document.getElementById("resultImage");
+  const panpanImage       = document.getElementById("panpanImage");
+  const celeImage         = document.getElementById("celeImage");
+  const coinImage         = document.getElementById("coinImage");
 
-  if (!container || !backgroundCanvas || !scratchCanvas 
-      || !resultImage || !panpanImage || !celeImage || !coinImage) {
+  if (!container || !backgroundCanvas || !scratchCanvas ||
+      !resultImage || !panpanImage || !celeImage || !coinImage) {
     console.error("Error: Required elements not found!");
     return;
   }
@@ -16,12 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // coin 슬라이드인
   setTimeout(() => coinImage.classList.add("visible"), 100);
 
-  const bgCtx = backgroundCanvas.getContext("2d");
-  const scratchCtx = scratchCanvas.getContext("2d");
-  let isDrawing = false;
+  const bgCtx       = backgroundCanvas.getContext("2d");
+  const scratchCtx  = scratchCanvas.getContext("2d");
+  let isDrawing     = false;
   let currentWidth, currentHeight;
   const ERASE_RADIUS = 20;
-  let resultShown = false;
+  let resultShown   = false;
 
   // 랜덤 결과 이미지 선택 (r1:40%, r2:40%, r3:20%)
   const resultSources = [
@@ -47,11 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setCanvasSize() {
     const rect = container.getBoundingClientRect();
-    currentWidth = rect.width;
+    currentWidth  = rect.width;
     currentHeight = rect.height;
 
-    backgroundCanvas.width = scratchCanvas.width = currentWidth;
-    backgroundCanvas.height = scratchCanvas.height = currentHeight;
+    backgroundCanvas.width = scratchCanvas.width  = currentWidth;
+    backgroundCanvas.height= scratchCanvas.height = currentHeight;
 
     if (bgImage.complete) {
       bgCtx.clearRect(0, 0, currentWidth, currentHeight);
@@ -64,8 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   window.addEventListener("resize", setCanvasSize);
-  bgImage.onload = setCanvasSize;
-  overlayImage.onload = () => {
+  bgImage.onload     = setCanvasSize;
+  overlayImage.onload= () => {
     scratchCtx.drawImage(overlayImage, 0, 0, currentWidth, currentHeight);
   };
 
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function checkScratchCompletion() {
     const imageData = scratchCtx.getImageData(0, 0, scratchCanvas.width, scratchCanvas.height);
-    let totalPixels = imageData.data.length / 4;
+    let totalPixels       = imageData.data.length / 4;
     let transparentPixels = 0;
 
     for (let i = 0; i < imageData.data.length; i += 4) {
